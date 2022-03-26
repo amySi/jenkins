@@ -1,0 +1,82 @@
+#!/bin/bash
+#author: group3
+#date: March 2022
+#Description : jenkins installation
+
+echo " Please be patient for installation of Jenkins"
+
+
+sleep 4
+
+if  [ $USER -ne 0 ]
+
+then
+
+echo -e "\n You must be root user in order to execute this script\n"
+
+exit 02
+fi 
+echo -e "\nWe are about to start the installation\n"
+
+sleep 2
+
+yum install java-1.8.0-openjdk-devel
+
+sleep 2
+
+sleep 2
+
+wget -O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins-ci.org/redhat/jenkins.repo 
+
+sleep 2
+
+sed -i 's/gpgcheck=1/gpgcheck=0/g' /etc/yum.repos.d/jenkins.repo
+
+sleep 2
+
+echo  -e "\nWe are now installing the latest version of Jenkins on Centos\/"
+
+sleep 2
+
+yum install jenkins
+
+systemctl start jenkins
+
+systemctl status jenkins
+
+sleep 2
+
+echo -e "Let's enable jenkins"
+
+systemctl enable jenkins
+
+systemctl status jenkins
+
+sleep 2
+
+echo -e "\nAll done! We need to now open the necesary ports for Jenkins\n"
+sleep 2
+
+firewall-cmd --permanent --zone=public --add-port=8080/tcp
+
+firewall-cmd --reload
+
+echo -e "\nNow you will need to open Jenkins page in the browser\n"
+
+sleep 4
+
+
+echo -e "\nPlease take note of your IP address below and click on link below\n"
+
+sleep 4
+
+A=`hostname -I | awk -F" " '{print$2}'` > /dev/null 2>&1
+
+echo -e "\nhttp://{$A}:8080\n"
+
+echo -e "n\Use the below password to unlock your Jenkins\n"
+
+sleep 4
+cat /var/lib/jenkins/secrets/initialAdminPassword
+
+exit
